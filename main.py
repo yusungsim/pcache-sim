@@ -55,9 +55,10 @@ class Cache:
                 return 'hit'
 
 def main():
-    cache = Cache(8, 2)
+    cache = Cache(8, 4)
     cache.printInfo()
-    
+   
+    '''
     #tag = 0b0, index = 0b1111, offset = 0b11 
     addr = 0b000000111111
     print("Translate address {} into tag, index, offset".format(addr))
@@ -65,26 +66,31 @@ def main():
 
     print(cache.accessAddr(addr))
     print(cache.accessAddr(addr))
-   
+    '''
+
     total_cold, total_hit, total_miss = 0, 0, 0
     # test for several random addr
-    for i in range(100):
-        addr = random.randint(0, 2**WORD_SIZE)        
-        print("Access addr: {}", addr)
-        print("tag, index, offset : {}", cache.translateAddr(addr))
-        result = cache.accessAddr(addr)
-        print("result: {}", result)
-        if result == 'coldmiss':
-            total_cold += 1
-        elif result == 'conflict':
-            total_miss += 1
-        elif result == 'hit':
-            total_hit += 1
+    testCount = 1000000 
+    with open("log.txt", 'w') as log:
+        for i in range(testCount):
+            addr = random.randint(0, 2**WORD_SIZE)        
+            log.write("Access addr: {}\n".format(addr))
+            log.write("tag, index, offset: {}\n".format(cache.translateAddr(addr)))
+            result = cache.accessAddr(addr)
+            log.write("result: {}\n".format(result))
+            if result == 'coldmiss':
+                total_cold += 1
+            elif result == 'conflict':
+                total_miss += 1
+            elif result == 'hit':
+                total_hit += 1
+            log.write("...\n")
 
     print("-----------------------------")
     print("Total result")
-    print("Cold misses: {}", total_cold)
-    print("Hits: {}", total_hit)
-    print("Conflict misses: {}", total_miss)
-
+    print("Cold misses: ", total_cold)
+    print("Hits: ", total_hit)
+    print("Conflict misses: ", total_miss)
+    print("Hit rate:", total_hit / testCount)
+    
 main()
