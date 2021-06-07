@@ -1,7 +1,7 @@
 # Cache simulator
+import random
 
-# word == 64bit
-WORD_SIZE = 64
+WORD_SIZE = 16
 
 # Direct mapped cache
 '''
@@ -48,7 +48,7 @@ class Cache:
         else:
             # tag different: always conflict miss (direct mapped)
             if self.array[index]['tag'] != tag:
-                self.arrary[index][tag] = tag
+                self.array[index][tag] = tag
                 return 'conflict'
             # else, tag was same so hit
             else:
@@ -65,6 +65,26 @@ def main():
 
     print(cache.accessAddr(addr))
     print(cache.accessAddr(addr))
+   
+    total_cold, total_hit, total_miss = 0, 0, 0
+    # test for several random addr
+    for i in range(100):
+        addr = random.randint(0, 2**WORD_SIZE)        
+        print("Access addr: {}", addr)
+        print("tag, index, offset : {}", cache.translateAddr(addr))
+        result = cache.accessAddr(addr)
+        print("result: {}", result)
+        if result == 'coldmiss':
+            total_cold += 1
+        elif result == 'conflict':
+            total_miss += 1
+        elif result == 'hit':
+            total_hit += 1
 
+    print("-----------------------------")
+    print("Total result")
+    print("Cold misses: {}", total_cold)
+    print("Hits: {}", total_hit)
+    print("Conflict misses: {}", total_miss)
 
 main()
