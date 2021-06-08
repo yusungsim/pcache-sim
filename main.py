@@ -2,38 +2,30 @@
 import accesspattern as AP
 import simulator as SIM
 import cache as CACHE
+import plcache as PLC
 
 WORD_SIZE = 32
 
 def main(testCount): 
     print("Test count: ", testCount)
     print("=========================================")
-     
-    '''
-    seq_cache = CACHE.DirectMappedCache(10, 6)
-    uni_cache = CACHE.DirectMappedCache(10, 6)
     
-    # Sequential test
-    seq_pattern = AP.sequential_with_jump(testCount, 0.05, 0.05, 2**8, 2**8, 2**2)
-    SIM.simulate("Sequential", seq_cache, seq_pattern)
-    
-    # Uniform test 
-    uni_pattern = AP.uniform_access(testCount)
-    SIM.simulate("Uniform", uni_cache, uni_pattern)
-    ''' 
-
     # realistic test 
-    # both cache 64KB
-    real_cache = CACHE.DirectMappedCache(12, 4) 
-    real_fullcache = CACHE.FullyAssocCache(12, 4)
+    # cache 64KB
+    locked_cache = PLC.PLFullassocCache(12, 4, True) 
+    unlocked_cache = PLC.PLFullassocCache(12, 4, False) 
     # save pattern in list
-    real_pattern = AP.realistic_pattern(testCount, branch_prob=0.3, loop_prob=0.4, loop_mean=8, loop_count=32)
-    real_list = [x for x in real_pattern]
+    pattern = AP.realistic_pattern(testCount, branch_prob=0.3, loop_prob=0.4, loop_mean=8, loop_count=32)
+    plist1 = [x for x in pattern]
+    plist2 = plist1.copy() 
 
     #
-    SIM.simulate("DirectMapped", real_cache, real_list)
+    q = 100
+
+    SIM.simulate("PLFullassocUnlocked", unlocked_cache, iter(plist1), iter(plist2), q)
     print("=========================================")
-    SIM.simulate("FullyAssociative",real_fullcache, real_list)
+    
+    SIM.simulate("PLFullassocLocked", locked_cache, iter(plist1), iter(plist2), q)
     print("=========================================")
 
-main(50000)
+main(100000)
