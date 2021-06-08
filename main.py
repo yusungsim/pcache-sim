@@ -5,37 +5,39 @@ import cache as CACHE
 import plcache as PLC
 import nomocache as NOMO
 
-WORD_SIZE = 32
-
-def main(testCount): 
-    print("Test count: ", testCount)
-    print("=========================================")
-    
-    # realistic test 
-    # cache 64KB
+# 2-thread simulator for NoMoCache
+# testCount: number of instr
+# plist : list of pattern, WORD_SIZE bit numbers inside
+# (generate this by accesspattern helpers
+# (list will not be changed, will use iterator over it)
+# degree: nomocache 
+# q: quantum for context switching threads, default 100\
+def testNomo(testCount, plist0, plist1, degree, q=100):
+    print("Testing NoMoCache with degree: {}...".format(degree))
+    print("-----------------------------------------")
+    print("TestCount: {}".format(testCount))
     sizeBit = 10
     offset = 6
-    nomo_0 = NOMO.NomoFullassocCache(sizeBit, offset, 0) 
-    nomo_16 = NOMO.NomoFullassocCache(sizeBit, offset, 16) 
-    nomo_32 = NOMO.NomoFullassocCache(sizeBit, offset, 32)  
-    nomo_64 = NOMO.NomoFullassocCache(sizeBit, offset, 64) 
-    # save pattern in list
-    pattern = AP.realistic_pattern(testCount, branch_prob=0.3, loop_prob=0.4, loop_mean=8, loop_count=32)
-    plist0 = [x for x in pattern]
-    plist1 = plist0.copy() 
-
-    #
-    q = 100
-
-    SIM.simulate("NomoFullassoc-0", nomo_0, iter(plist0), iter(plist1), q)
-    print("=========================================")
+    nomo_cache = NOMO.NomoFullassocCache(sizeBit, offset, degree)
     
-    SIM.simulate("NomoFullassoc-16", nomo_16, iter(plist0), iter(plist1), q)
-    print("=========================================")
+    result = SIM.simulate("NomoCache-"+str(degree), nomo_cache, iter(plist0), iter(plist1), q) 
+    print("==============================================\n")
+    return result
 
-    SIM.simulate("NomoFullassoc-32", nomo_32, iter(plist0), iter(plist1), q)
-    print("=========================================")
+def main(testCount): 
+    with open("log_test.txt", 'w') as log:
+        # save pattern in list
+        pattern = AP.realistic_pattern(testCount, branch_prob=0.3, loop_prob=0.4, loop_mean=8, loop_count=32)
+        plist0 = [x for x in pattern]
+        plist1 = plist0.copy() 
 
-    SIM.simulate("NomoFullassoc-64", nomo_64, iter(plist0), iter(plist1), q)
-    print("=========================================")
-main(10000)
+        deg_list = [0, 16, 32, 64, 128, 256, 512] 
+        for deg in deg_list:
+            cold, hit, conflict, interfere, capacity, stat_list = testNomo(testCount, plist0, plist1, deg, q=50)
+            total = cold + hit + conflict + interfere + capacity
+            misses = total - hit
+            hit_rate = hit / total
+            interfere_rate = interfere / misses
+            log.write("Nomo-{} / HitRate {} / InterfereRate {}\n".format(deg, hit_rate, interfere_rate))
+
+main(40000)

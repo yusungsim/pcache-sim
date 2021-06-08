@@ -10,6 +10,9 @@ class NomoFullassocCache:
         self.degree = degree
         self.tagSize = WORD_SIZE - offset
         self.lines = 2 ** sizeBit
+        # check condition for degree: maximumn half
+        if self.degree * 2 > self.lines:
+            raise Exception("too large degree")
         self.capacity = (2 ** sizeBit) * (2 ** offset)
         # actual states
         self.time = 0

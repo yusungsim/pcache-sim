@@ -81,7 +81,7 @@ def simulate(name, cache, pattern0, pattern1, quantum=1000):
                 cur_quantum = 0
  
     printResult(total_cold, total_hit, total_conflict, total_interfere, total_capacity, stat_list)
-    return total_cold, total_hit, total_conflict, total_capacity
+    return total_cold, total_hit, total_conflict, total_interfere, total_capacity, stat_list
 
 def printResult(cold, hit, conflict, interfere, capacity, stat_list):
     total = cold + hit + conflict + capacity + interfere
