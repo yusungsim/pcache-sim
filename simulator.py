@@ -47,7 +47,7 @@ def simulate(name, cache, pattern0, pattern1, quantum=1000):
                 
             # access the address
             # TODO always lock the line change this
-            result = cache.accessAddr(1, cur_thd, addr)
+            result = cache.accessAddr(cur_thd, addr)
             # case by result
             if result == 'coldmiss':
                 stat_list[cur_thd]['cold'] += 1
