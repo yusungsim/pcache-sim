@@ -74,8 +74,13 @@ class PLFullassocCache:
         # eviction-check: need consider loc
         # only do this when lockCheck on
         if self.lockCheck and self.array[lru_index]['loc'] == 1:
-            # cannot evict, read main mem directly
-            return 'readthru'
+            # check thd: if same, safe to evict
+            if thd == self.array[lru_index]['thd']:
+                self.array[lru_index] = {'loc':loc, 'thd':thd, 'tag': tag, 'time': self.time}
+                return 'capacity'
+            # not same, cannot evict, read main mem directly
+            else:
+                return 'readthru'
         else:
             old_thd = self.array[lru_index]['thd']
             # evict and replace

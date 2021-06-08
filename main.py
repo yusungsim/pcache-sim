@@ -12,8 +12,10 @@ def main(testCount):
     
     # realistic test 
     # cache 64KB
-    locked_cache = PLC.PLFullassocCache(12, 4, True) 
-    unlocked_cache = PLC.PLFullassocCache(12, 4, False) 
+    sizeBit = 10
+    offset = 6
+    locked_cache = PLC.PLFullassocCache(sizeBit, offset, True) 
+    unlocked_cache = PLC.PLFullassocCache(sizeBit, offset, False) 
     # save pattern in list
     pattern = AP.realistic_pattern(testCount, branch_prob=0.3, loop_prob=0.4, loop_mean=8, loop_count=32)
     plist1 = [x for x in pattern]
@@ -28,4 +30,4 @@ def main(testCount):
     SIM.simulate("PLFullassocLocked", locked_cache, iter(plist1), iter(plist2), q)
     print("=========================================")
 
-main(100000)
+main(40000)

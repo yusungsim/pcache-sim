@@ -92,5 +92,5 @@ def printResult(cold, hit, conflict, interfere, capacity, stat_list):
     print("Hit: {}".format(hit))
     print("Miss: {} (cold: {}, conflict: {}, capacity: {}, interfere: {})".format(misses, cold, conflict, capacity, interfere))
     print("Hit rate:", hit / total)
-    print("Interfere rate:", interfere / total)
+    print("Interfere rate:", interfere / misses)
     print(stat_list)
