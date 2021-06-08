@@ -23,10 +23,11 @@ def main(testCount):
     ''' 
 
     # realistic test 
-    real_cache = CACHE.DirectMappedCache(10, 6) 
-    real_fullcache = CACHE.FullyAssocCache(10, 6)
+    # both cache 64KB
+    real_cache = CACHE.DirectMappedCache(12, 4) 
+    real_fullcache = CACHE.FullyAssocCache(12, 4)
     # save pattern in list
-    real_pattern = AP.realistic_pattern(testCount, loop_prob=0.4, loop_mean=8, loop_count=32)
+    real_pattern = AP.realistic_pattern(testCount, branch_prob=0.3, loop_prob=0.4, loop_mean=8, loop_count=32)
     real_list = [x for x in real_pattern]
 
     #
@@ -35,4 +36,4 @@ def main(testCount):
     SIM.simulate("FullyAssociative",real_fullcache, real_list)
     print("=========================================")
 
-main(100000)
+main(50000)

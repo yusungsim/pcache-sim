@@ -18,7 +18,6 @@ class DirectMappedCache:
         print("------------------")
         print("Cache lines: {}".format(self.lines))
         print("Cache capacity: {}B".format(self.capacity))
-        print("------------------")
         print("Address format......", end="")
         print("|  tag:{}  |  indexSize:{}  |  offset:{} |".format(self.tagSize, self.indexSize, self.offset))
         print("------------------")
@@ -68,7 +67,6 @@ class FullyAssocCache:
         print("------------------")
         print("Cache lines: {}".format(self.lines))
         print("Cache capacity: {}B".format(self.capacity))
-        print("------------------")
         print("Address format......", end="")
         print("|  tag:{}  |  offset:{} |".format(self.tagSize,  self.offset))
         print("------------------")
@@ -109,3 +107,5 @@ class FullyAssocCache:
         # iterated over all array, need evict by lru
         self.array[lru_index] = {'tag':tag, 'time': self.time}
         return 'capacity' 
+
+
