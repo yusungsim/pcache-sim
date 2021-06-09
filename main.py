@@ -66,5 +66,4 @@ def main(testCount):
             log.write("Nomo-{} / HitRate {} / InterfereRate {}\n".format(deg, hit_rate, interfere_rate))
 
 
-
 main(40000)

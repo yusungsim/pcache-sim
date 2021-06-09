@@ -94,3 +94,4 @@ def printResult(cold, hit, conflict, interfere, capacity, stat_list):
     print("Hit rate:", hit / total)
     print("Interfere rate:", interfere / misses)
     print(stat_list)
+    print("=================================================\n")

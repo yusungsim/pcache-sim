@@ -80,7 +80,7 @@ class FullyAssocCache:
         offset = int(offsetStr, 2)
         return (tag, 0, offset)
 
-    def accessAddr(self, addr):
+    def accessAddr(self, thd, addr):
         # update time first
         self.time += 1
         # parse addr
@@ -92,12 +92,12 @@ class FullyAssocCache:
         for i in range(self.lines):
             # if none, put in there wirh cold miss
             if self.array[i] == None:
-                self.array[i] = {'tag': tag, 'time': self.time}
+                self.array[i] = {'thd':thd, 'tag': tag, 'time': self.time}
                 return 'coldmiss'
             # if not, check tag
             else:
                 # same tag, update time and hit
-                if tag == self.array[i]['tag']:
+                if tag == self.array[i]['tag'] and thd == self.array[i]['thd']:
                     self.array[i]['time'] = self.time
                     return 'hit'
                 # diff tag, update lru and continue search
@@ -105,7 +105,11 @@ class FullyAssocCache:
                     lru_index = i
                     lru_time = self.array[i]['time']
         # iterated over all array, need evict by lru
-        self.array[lru_index] = {'tag':tag, 'time': self.time}
-        return 'capacity' 
+        old_thd = self.array[lru_index]['thd']
+        self.array[lru_index] = {'thd':thd, 'tag':tag, 'time': self.time}
+        if thd != old_thd: 
+            return 'capacity-interfere' 
+        else:
+            return 'capacity'
 
 
